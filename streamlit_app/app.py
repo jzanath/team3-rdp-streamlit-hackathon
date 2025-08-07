@@ -15,7 +15,6 @@ def main() -> None:
 
     pg.run()
 
-
 if __name__ == "__main__":
     try:
         main()
