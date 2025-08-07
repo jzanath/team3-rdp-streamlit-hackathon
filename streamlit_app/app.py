@@ -6,6 +6,7 @@ def main() -> None:
     welcome = st.Page("pages/welcome.py", title="Welcome", icon=":material/home:", default=True)
 
     print("Hello World")
+    print("Im on staging!")
     pg = st.navigation(
         {
             "App": [welcome],
