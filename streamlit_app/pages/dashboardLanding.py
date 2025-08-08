@@ -12,14 +12,10 @@ st.markdown("""
     <h2 style='text-align: center; margin-bottom: 10px;'> Production Metrics Dashboard</h2>
 """, unsafe_allow_html=True)
 
-# Selection boxes in a styled container
-with st.container():
-    st.markdown("### Filter Options")
-    col_sel1, col_sel2 = st.columns([1, 1])
-    with col_sel1:
-        region = st.selectbox("🌍 Region", ["All", "NA", "LATAM"])
-    with col_sel2:
-        time_period = st.selectbox("⏱️ Time Period", ["Last Day", "Last Week", "Last Month", "Last Year", "All Time"], index=4)
+st.sidebar.header("🔧 Filter Options")
+region = st.sidebar.selectbox("Select Region", ["All", "NA", "LATAM"], index=1)
+time_period = st.sidebar.selectbox("Select Timeframe", ["Last 1 Hour", "Last 1 Day", "Last 1 Week", "Last 1 Month", "Last 1 Year", "All Time"])
+
 
 # Divider
 st.markdown("---")

@@ -8,13 +8,16 @@ from database import functions as db
 st.set_page_config(page_title="Sustainability Dashboard", layout="wide")
 
 # Title
-st.title("🌿 Sustainability Dashboard")
+st.title("⚙️ Plant Data")
 st.markdown("Use the dropdowns below to explore plant performance metrics.")
 
 # Dropdown options
 plants = ["Orlando", "Houston", "Cleveland"]
 energy_metrics = ["Total Energy Consumed", "Average Power Usage"]
 alerts = ["High Power", "Voltage Spike", "Overrun"]
+
+st.sidebar.header("🔧 Filter Options")
+plant = st.sidebar.selectbox("Select Site", plants, index=1)
 
 # Dropdowns for Graph 1
 plant = st.selectbox("Select Site", plants)
