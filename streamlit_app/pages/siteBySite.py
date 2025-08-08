@@ -38,9 +38,7 @@ def get_time_from_input(time):
 
 # ------------------ Streamlit Layout ------------------ #
 st.set_page_config(page_title="Site-to-Site Dashboard", layout="wide")
-st.title("🏭 Site-to-Site Dashboard")
-st.markdown("This dashboard visualizes fault counts across plants for selected regions and timeframes.")
-
+st.title("🏭 Site-by-Site Comparison")
 # ------------------ Sidebar Filters ------------------ #
 st.sidebar.header("🔧 Filter Options")
 current_region = st.sidebar.selectbox("Select Region", ["All", "NA", "LATAM"], index=1)
@@ -56,14 +54,14 @@ for plant in all_plants:
 dataframe = pd.DataFrame(plant_data, columns=["Plant", "Faults"])
 
 # ------------------ Visualization 1 ------------------ #
-st.markdown("### 📊 Faults by Plant")
+st.markdown("### Faults by Plant")
 fig1 = px.bar(dataframe, x="Plant", y="Faults", color="Faults", color_continuous_scale="Viridis",
               title=f"Faults per Plant in {current_region} Region ({timeframe})")
 fig1.update_layout(xaxis_title="Plant", yaxis_title="Faults", template="plotly_white")
 st.plotly_chart(fig1, use_container_width=True)
 
 # ------------------ Visualization 2: Volume Over Time ------------------ #
-st.markdown("### 🧪 Product Volume Over Time by Site")
+st.markdown("### Product Volume Over Time by Site")
 
 # Dropdown for site selection
 selected_site = st.selectbox("Select Site for Volume Trend", ["Chicago", "Orlando", "Houston"])
@@ -80,15 +78,14 @@ volume_data = pd.DataFrame({
     )
 })
 
-# Filter data based on selected site
-filtered_volume = volume_data[volume_data["Site"] == selected_site]
 
-# Plot volume over time
-fig2 = px.line(filtered_volume, x="Time", y="Volume", markers=True,
-               title=f"Volume Produced Over Time at {selected_site}",
-               color_discrete_sequence=["#636EFA"])
-fig2.update_layout(xaxis_title="Month", yaxis_title="Volume Produced", template="plotly_white")
+# Plot volume over time for all plants
+fig2 = px.line(volume_data, x="Time", y="Volume", color="Site", markers=True,
+               title="Volume Produced Over Time for All Plants",
+               template="plotly_white")
+fig2.update_layout(xaxis_title="Month", yaxis_title="Volume Produced")
 st.plotly_chart(fig2, use_container_width=True)
+
 
 
 
