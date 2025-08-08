@@ -4,6 +4,8 @@ DB_CONNECTION_STRING = "sustainability_data.db"
 
 def testCall():
     """
+    Params: None
+
     Simply a test call to verify relative importing works.
 
     Returns: 1
@@ -14,6 +16,7 @@ def testCall():
 
 def getPlants():
     """
+    Params: None
     Queries the database and returns a list of all the plants that have
     an asset in the `assets` table.
 
@@ -38,6 +41,8 @@ def getPlants():
 
 def getTotalPlantFaults(plantName):
     """
+    Params: Name of plant as a string
+
     Queries the database and returns the number of faults that the
     specified plant has in the `alerts` table.
 
@@ -70,6 +75,8 @@ def getTotalPlantFaults(plantName):
 
 def getAvgPlantKWH(plantName):
     """
+    Params: Name of plant as a string
+
     Queries the database and returns the computed avg of total_kwh from
     the 'utility_summary' table.
 
