@@ -9,7 +9,7 @@ st.set_page_config(page_title="Production Metrics Dashboard", layout="wide")
 
 # Title with icon and reduced spacing
 st.markdown("""
-    <h2 style='text-align: center; margin-bottom: 10px;'> Production Metrics Dashboard</h2>
+    <h2 style='text-align: center; margin-bottom: 10px;'>🌲 Production Metrics Sustainability Dashboard</h2>
 """, unsafe_allow_html=True)
 
 st.sidebar.header("🔧 Filter Options")
@@ -100,7 +100,7 @@ with col2:
 st.markdown("---")
 
 # Energy usage chart
-st.markdown("### Avg Energy")
+st.markdown("### Average Energy Usage")
 
 energy_data = []
 totalUsage = 0

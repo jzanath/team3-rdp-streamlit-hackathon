@@ -61,7 +61,7 @@ fig1.update_layout(xaxis_title="Plant", yaxis_title="Faults", template="plotly_w
 st.plotly_chart(fig1, use_container_width=True)
 
 # ------------------ Visualization 2: Volume Over Time ------------------ #
-st.markdown("### Product Volume Over Time by Site")
+st.markdown("### Product Volume Over Time by Region")
 
 # Generate mock time series data
 time_range = pd.date_range(start="2023-01-01", periods=12, freq="M")
