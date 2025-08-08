@@ -227,6 +227,6 @@ def getPlantAvgBatchTime(plantName):
         averageBatchTime = sum(batchTimes, timedelta()) / numOfBatches
         print("Average Batch Time: %s" % averageBatchTime)
     else:
-        averageBatchTime = "No Batch Data"
+        averageBatchTime = timedelta(0)
 
     return int(averageBatchTime.total_seconds() / 60)
