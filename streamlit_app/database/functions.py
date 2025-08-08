@@ -79,6 +79,42 @@ def getTotalPlantFaults(plantName):
 
     return numOfPlantFaults
 
+def getTotalPlantFaultsFromDate(plantName, date):
+    """
+    Params:
+        Name of plant as a string
+        Date you want to search starting from (Format YYYY-MM-DD)
+
+    Queries the database and returns the number of faults that the
+    specified plant has in the `alerts` table.
+
+    Returns: An int, will be 0 if the plant was not in the `alerts` table.
+    """
+    conn = sql.connect(DB_CONNECTION_STRING)
+    cur = conn.cursor()
+
+    sqlStatement = '''
+        SELECT 
+            COUNT(*)
+        FROM 
+            assets 
+        INNER JOIN 
+            alerts 
+        ON 
+            alerts.asset_id = assets.asset_id
+        WHERE
+            assets.site = ? AND alerts.timestamp >= ?;
+    '''
+
+    result = cur.execute(sqlStatement, (plantName, date))
+    data = result.fetchall()
+    conn.close()
+
+    print("Data is a list of tuples: %s" % data)
+    numOfPlantFaults = data[0][0]
+
+    return numOfPlantFaults
+
 def getAvgPlantKWH(plantName):
     """
     Params: Name of plant as a string
@@ -110,6 +146,14 @@ def getAvgPlantKWH(plantName):
     return plantAvgKWH
 
 def getPlantAvgBatchTime(plantName):
+    """
+    Params: Name of plant as a string
+
+    Queries the database and returns the average batch time
+    from the 'batches' table for that site.
+
+    Returns: A string
+    """
     conn = sql.connect(DB_CONNECTION_STRING)
     cur = conn.cursor()
 
@@ -136,16 +180,19 @@ def getPlantAvgBatchTime(plantName):
     batchTimes = []
     numOfBatches = len(data)
 
-    for timeframe in data:
-        startTime = timeframe[0]
-        endTime = timeframe[1]
+    if numOfBatches > 0:
+        for timeframe in data:
+            startTime = timeframe[0]
+            endTime = timeframe[1]
 
-        startDT = datetime.strptime(startTime, '%Y-%m-%d %H:%M:%S')
-        endDT = datetime.strptime(endTime, '%Y-%m-%d %H:%M:%S')
+            startDT = datetime.strptime(startTime, '%Y-%m-%d %H:%M:%S')
+            endDT = datetime.strptime(endTime, '%Y-%m-%d %H:%M:%S')
 
-        batchTimes.append(endDT - startDT)
+            batchTimes.append(endDT - startDT)
 
-    averageBatchTime = sum(batchTimes, timedelta()) / numOfBatches
-    print("Average Batch Time: %s" % averageBatchTime)
+        averageBatchTime = sum(batchTimes, timedelta()) / numOfBatches
+        print("Average Batch Time: %s" % averageBatchTime)
+    else:
+        averageBatchTime = "No Batch Data"
 
     return str(averageBatchTime)
