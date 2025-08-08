@@ -2,69 +2,72 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.express as px
-from database import functions as db
-st.write(db.getPlantAvgBatchTime("Chicago"))
+
 # Set page configuration
 st.set_page_config(page_title="Sustainability Dashboard", layout="wide")
 
 # Title
-st.title("🏭 Sustainability Dashboard")
+st.title("🌿 Sustainability Dashboard")
 st.markdown("Use the dropdowns below to explore plant performance metrics.")
 
 # Dropdown options
 sites = ["Orlando", "Houston", "Cleveland"]
 energy_metrics = ["Total Energy Consumed", "Average Power Usage"]
+batches = [f"Batch {i}" for i in range(1, 11)]
 assets = ["Pump", "Compressor", "Mixer", "Meter"]
-products = ["Produce One", "Produce Two", "Produce Three", "Produce Four", "Produce Five"]
-chart_types = ["Pie Chart", "Bar Chart", "Line Chart", "Heat Map", "Scatter Plot"]
+alerts = ["High Power", "Voltage Spike", "Overrun"]
 
-# Sidebar dropdowns
+# Dropdowns for Graph 1
 site = st.selectbox("Select Site", sites)
 energy_metric = st.selectbox("Select Energy Usage Metric", energy_metrics)
-asset = st.selectbox("Select Asset Type", assets)
-product = st.selectbox("Select Product", products)
-chart_type = st.selectbox("Select Chart Type", chart_types)
 
-# Generate mock data
-np.random.seed(42)
-mock_data = pd.DataFrame({
-    "Site": [site]*10,
-    "Energy Metric": [energy_metric]*10,
-    "Asset": [asset]*10,
-    "Product": [product]*10,
-    "Value 1": np.random.randint(100, 1000, 10),
-    "Value 2": np.random.randint(50, 500, 10),
-    "Category": [f"Category {i+1}" for i in range(10)]
+# Generate mock time series data
+time_range = pd.date_range(start="2023-01-01", periods=12, freq="M")
+
+# Mock data for energy usage
+energy_data = pd.DataFrame({
+    "Time": time_range,
+    "Site": site,
+    "Metric": energy_metric,
+    "Usage": np.random.randint(1000, 5000, len(time_range))
 })
 
-# Display selected options
-st.markdown(f"### 📍 Selected Configuration")
-st.write(f"**Site:** {site}")
-st.write(f"**Energy Metric:** {energy_metric}")
-st.write(f"**Asset:** {asset}")
-st.write(f"**Product:** {product}")
-st.write(f"**Chart Type:** {chart_type}")
+# Graph 1: Energy usage vs time
+st.markdown("### ⚡ Graph 1: Energy Usage Over Time")
+fig1 = px.line(energy_data, x="Time", y="Usage", markers=True, title=f"{energy_metric} at {site}")
+st.plotly_chart(fig1, use_container_width=True)
 
-# Generate chart based on selection
-st.markdown("### 📊 Visualization")
+# Dropdown for Graph 2
+batch = st.selectbox("Select Batch", batches)
 
-if chart_type == "Bar Chart":
-    fig = px.bar(mock_data, x="Category", y="Value 1", title=f"{chart_type} - {energy_metric} for {asset} at {site}")
-    st.plotly_chart(fig, use_container_width=True)
+# Mock data for batch performance
+batch_data = pd.DataFrame({
+    "Time": time_range,
+    "Site": site,
+    "Batch": batch,
+    "Performance": np.random.uniform(70, 100, len(time_range))
+})
 
-elif chart_type == "Line Chart":
-    fig = px.line(mock_data, x="Category", y="Value 1", markers=True, title=f"{chart_type} - {energy_metric} for {asset} at {site}")
-    st.plotly_chart(fig, use_container_width=True)
+# Graph 2: Batch performance vs time
+st.markdown("### 🧪 Graph 2: Batch Performance Over Time")
+fig2 = px.line(batch_data, x="Time", y="Performance", markers=True, title=f"{batch} Performance at {site}")
+st.plotly_chart(fig2, use_container_width=True)
 
-elif chart_type == "Pie Chart":
-    fig = px.pie(mock_data, names="Category", values="Value 1", title=f"{chart_type} - {energy_metric} for {asset} at {site}")
-    st.plotly_chart(fig, use_container_width=True)
+# Dropdowns for Graph 3
+asset_id = st.selectbox("Select Asset ID", assets)
+alert_type = st.selectbox("Select Alert Type", alerts)
 
-elif chart_type == "Scatter Plot":
-    fig = px.scatter(mock_data, x="Value 1", y="Value 2", color="Category", size="Value 1", title=f"{chart_type} - {energy_metric} vs Value 2")
-    st.plotly_chart(fig, use_container_width=True)
+# Mock data for alerts per asset
+alert_data = pd.DataFrame({
+    "Time": time_range,
+    "Site": site,
+    "Asset ID": asset_id,
+    "Alert Type": alert_type,
+    "Alert Count": np.random.randint(0, 20, len(time_range))
+})
 
-elif chart_type == "Heat Map":
-    heat_data = mock_data[["Value 1", "Value 2"]].corr()
-    fig = px.imshow(heat_data, text_auto=True, title=f"{chart_type} - Correlation between Value 1 and Value 2")
-    st.plotly_chart(fig, use_container_width=True)
+# Graph 3: Alerts per asset over time
+st.markdown("### 🚨 Graph 3: Alerts Over Time")
+fig3 = px.bar(alert_data, x="Time", y="Alert Count", title=f"{alert_type} for {asset_id} at {site}")
+st.plotly_chart(fig3, use_container_width=True)
+
