@@ -149,4 +149,3 @@ def getPlantAvgBatchTime(plantName):
     print("Average Batch Time: %s" % averageBatchTime)
 
     return str(averageBatchTime)
-
