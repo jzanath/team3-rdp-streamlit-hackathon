@@ -2,7 +2,8 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.express as px
-
+from database import functions as db
+st.write(db.getPlantAvgBatchTime("Chicago"))
 # Set page configuration
 st.set_page_config(page_title="Sustainability Dashboard", layout="wide")
 
