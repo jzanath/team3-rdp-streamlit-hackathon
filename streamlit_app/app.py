@@ -14,8 +14,7 @@ def main() -> None:
     pg = st.navigation([
         dashboardLanding,
         siteBySite,
-        plantData,
-        welcome
+        plantData
     ])
 
 
