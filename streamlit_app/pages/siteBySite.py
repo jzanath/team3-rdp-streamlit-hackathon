@@ -81,7 +81,7 @@ volume_data = pd.DataFrame({
 
 # Plot volume over time for all plants
 fig2 = px.line(volume_data, x="Time", y="Volume", color="Site", markers=True,
-               title="Volume Produced Over Time for All Plants",
+               title=f"Volume Produced Over Time in {current_region}",
                template="plotly_white")
 fig2.update_layout(xaxis_title="Month", yaxis_title="Volume Produced")
 st.plotly_chart(fig2, use_container_width=True)
