@@ -78,6 +78,61 @@ def getPlantAssets(plantName):
     print(returnList)
     return returnList
 
+def getAssetAlertTypes(assetId):
+    """
+    Params:
+        Int: assetId
+
+    Queries the database and returns all alert instances for that asset
+    that appear in 'alerts'.
+
+    Returns: A list of strings that are the alert_types
+    """
+    conn = sql.connect(DB_CONNECTION_STRING)
+    cur = conn.cursor()
+
+    sqlStatement = '''
+        SELECT alert_type FROM ALERTS WHERE asset_id = ?;
+    '''
+
+    result = cur.execute(sqlStatement, (assetId,))
+    data = result.fetchall()
+    conn.close()
+
+    print("Data is a list of tuples: %s" % data)
+
+    index = 0
+    alertTypes = []
+    for alert in data:
+        alertTypes.append(data[index][0])
+        index += 1
+
+    return alertTypes
+
+def getTotalAssetAlerts(assetId):
+    """
+    Params:
+        Int: assetId
+
+    Queries the database and returns a count of alerts for that asset
+    that appear in 'alerts'.
+
+    Returns: An Int
+    """
+    conn = sql.connect(DB_CONNECTION_STRING)
+    cur = conn.cursor()
+    sqlStatement = '''
+        SELECT COUNT(*) FROM ALERTS WHERE asset_id = ?;
+    '''
+
+    result = cur.execute(sqlStatement, (assetId,))
+    data = result.fetchall()
+    conn.close()
+
+    print("Data is a list of tuples: %s" % data)
+    numOfAssetAlerts = data[0][0]
+
+    return numOfAssetAlerts
 
 def getTotalPlantFaults(plantName):
     """
