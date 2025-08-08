@@ -10,13 +10,14 @@ def main() -> None:
     plantData = st.Page(page="pages/plantData.py", title="Plant Data", icon=":material/manufacturing:", default=False)
 
 
-    pg = st.navigation(
-        {
-            "Dashboard Landing": [dashboardLanding],
-            "Site By Site": [siteBySite],
-            "Plant Data": [plantData]
-        }
-    )
+    
+    pg = st.navigation([
+        dashboardLanding,
+        siteBySite,
+        plantData,
+        welcome
+    ])
+
 
     pg.run()
 
