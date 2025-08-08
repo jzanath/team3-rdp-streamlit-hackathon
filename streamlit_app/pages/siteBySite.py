@@ -22,9 +22,7 @@ def format_date(date):
 
 def get_time_from_input(time):
     current_datetime = datetime.now()
-    if time == "Last 1 Hour":
-        return format_date(current_datetime - timedelta(hours=1))
-    elif time == "Last 1 Day":
+    if time == "Last 1 Day":
         return format_date(current_datetime - timedelta(days=1))
     elif time == "Last 1 Week":
         return format_date(current_datetime - timedelta(weeks=1))
@@ -42,7 +40,7 @@ st.title("🏭 Site-by-Site Comparison")
 # ------------------ Sidebar Filters ------------------ #
 st.sidebar.header("🔧 Filter Options")
 current_region = st.sidebar.selectbox("Select Region", ["All", "NA", "LATAM"], index=1)
-timeframe = st.sidebar.selectbox("Select Timeframe", ["Last 1 Hour", "Last 1 Day", "Last 1 Week", "Last 1 Month", "Last 1 Year", "All Time"])
+timeframe = st.sidebar.selectbox("Select Timeframe", ["Last 1 Day", "Last 1 Week", "Last 1 Month", "Last 1 Year", "All Time"])
 
 # ------------------ Data Retrieval ------------------ #
 all_plants = db.getPlants(get_region_id(current_region))

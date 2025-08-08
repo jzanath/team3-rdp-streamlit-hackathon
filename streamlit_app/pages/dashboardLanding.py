@@ -14,7 +14,7 @@ st.markdown("""
 
 st.sidebar.header("🔧 Filter Options")
 region = st.sidebar.selectbox("Select Region", ["All", "NA", "LATAM"], index=1)
-time_period = st.sidebar.selectbox("Select Timeframe", ["Last 1 Hour", "Last 1 Day", "Last 1 Week", "Last 1 Month", "Last 1 Year", "All Time"])
+time_period = st.sidebar.selectbox("Select Timeframe", ["Last 1 Day", "Last 1 Week", "Last 1 Month", "Last 1 Year", "All Time"])
 
 
 # Divider
@@ -34,9 +34,7 @@ def format_date(date):
     return year + "-" + month + "-" + day
 def get_time_from_input(time):
     current_datetime = datetime.now()
-    if time == "Last 1 Hour":
-        return format_date(current_datetime - timedelta(hours=1))
-    elif time == "Last 1 Day":
+    if time == "Last 1 Day":
         return format_date(current_datetime - timedelta(days=1))
     elif time == "Last 1 Week":
         return format_date(current_datetime - timedelta(weeks=1))
