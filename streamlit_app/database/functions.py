@@ -1,4 +1,6 @@
 import sqlite3 as sql
+from datetime import datetime
+from datetime import timedelta
 
 DB_CONNECTION_STRING = "sustainability_data.db"
 
@@ -106,3 +108,45 @@ def getAvgPlantKWH(plantName):
     plantAvgKWH = data[0][1]
 
     return plantAvgKWH
+
+def getPlantAvgBatchTime(plantName):
+    conn = sql.connect(DB_CONNECTION_STRING)
+    cur = conn.cursor()
+
+    sqlStatement = '''
+        SELECT 
+            batches.start_time,
+            batches.end_time
+        FROM 
+            assets 
+        INNER JOIN 
+            batches 
+        ON 
+            batches.asset_id = assets.asset_id
+        WHERE
+            assets.site = ?
+        ORDER BY
+            start_time;
+    '''
+
+    result = cur.execute(sqlStatement, (plantName,))
+    data = result.fetchall()
+    conn.close()
+
+    batchTimes = []
+    numOfBatches = len(data)
+
+    for timeframe in data:
+        startTime = timeframe[0]
+        endTime = timeframe[1]
+
+        startDT = datetime.strptime(startTime, '%Y-%m-%d %H:%M:%S')
+        endDT = datetime.strptime(endTime, '%Y-%m-%d %H:%M:%S')
+
+        batchTimes.append(endDT - startDT)
+
+    averageBatchTime = sum(batchTimes, timedelta()) / numOfBatches
+    print("Average Batch Time: %s" % averageBatchTime)
+
+    return str(averageBatchTime)
+
