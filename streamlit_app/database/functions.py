@@ -45,6 +45,40 @@ def getPlants(region_id):
 
     return plants
 
+def getPlantAssets(plantName):
+    """
+    Params: Name of plant as a string
+
+    Queries the database and returns assetId and assetName pairs from
+    the `assets` table for the given site.
+
+    Returns: A list of python dictionaries.
+        Keys:
+            Asset ID
+            Name
+    """
+    conn = sql.connect(DB_CONNECTION_STRING)
+    cur = conn.cursor()
+
+    sqlStatement = '''
+        SELECT asset_id, name FROM ASSETS WHERE site = ?;
+    '''
+
+    result = cur.execute(sqlStatement, (plantName,))
+    data = result.fetchall()
+    conn.close()
+
+    print("Data is a list of tuples: %s" % data)
+
+    returnList = []
+    for asset in data:
+        tempDict = {"Asset ID": asset[0], "Name": asset[1]}
+        returnList.append(tempDict)
+
+    print(returnList)
+    return returnList
+
+
 def getTotalPlantFaults(plantName):
     """
     Params: Name of plant as a string
@@ -195,4 +229,4 @@ def getPlantAvgBatchTime(plantName):
     else:
         averageBatchTime = "No Batch Data"
 
-    return str(averageBatchTime)
+    return int(averageBatchTime.total_seconds() / 60)
