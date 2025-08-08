@@ -14,9 +14,11 @@ def testCall():
 
     return 1
 
-def getPlants():
+def getPlants(region_id):
     """
-    Params: None
+    Params: Region ID
+        1 = NA
+        2 = LATAM
     Queries the database and returns a list of all the plants that have
     an asset in the `assets` table.
 
@@ -25,17 +27,19 @@ def getPlants():
     conn = sql.connect(DB_CONNECTION_STRING)
     cur = conn.cursor()
 
-    sqlStatement = '''SELECT DISTINCT site FROM assets;'''
+    sqlStatement = '''SELECT DISTINCT site FROM assets WHERE region_id = ?;'''
 
-    result = cur.execute(sqlStatement)
+    result = cur.execute(sqlStatement, (region_id,))
     data = result.fetchall()
     conn.close() # Done with db, should close the connection
 
     print("Data is a list of tuples: %s" % data)
 
+    index = 0
     plants = []
-    for i in range(3):
-        plants.append(data[i][0])
+    for plant in data:
+        plants.append(data[index][0])
+        index += 1
 
     return plants
 

@@ -4,7 +4,7 @@ from database import functions as db
 st.write("This will be the dashboad landing page :smile:")
 st.divider()
 
-plants = db.getPlants()
+plants = db.getPlants(region_id=1)
 st.write(plants)
 
 st.divider()
