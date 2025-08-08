@@ -19,9 +19,6 @@ alerts = ["High Power", "Voltage Spike", "Overrun"]
 st.sidebar.header("🔧 Filter Options")
 plant = st.sidebar.selectbox("Select Site", plants, index=1)
 
-# Dropdowns for Graph 1
-plant = st.selectbox("Select Site", plants)
-
 assets = db.getPlantAssets(plant)
 
 asset_ids = []
