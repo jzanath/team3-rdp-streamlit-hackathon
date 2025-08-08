@@ -63,9 +63,6 @@ st.plotly_chart(fig1, use_container_width=True)
 # ------------------ Visualization 2: Volume Over Time ------------------ #
 st.markdown("### Product Volume Over Time by Site")
 
-# Dropdown for site selection
-selected_site = st.selectbox("Select Site for Volume Trend", ["Chicago", "Orlando", "Houston"])
-
 # Generate mock time series data
 time_range = pd.date_range(start="2023-01-01", periods=12, freq="M")
 volume_data = pd.DataFrame({
