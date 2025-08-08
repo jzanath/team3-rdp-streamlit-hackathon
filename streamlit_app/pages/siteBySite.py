@@ -1,11 +1,10 @@
 import streamlit as st
 import pandas as pd
+import plotly.express as px
 from database import functions as db
-from enum import Enum
-from pygments.lexer import default
 from datetime import datetime, timedelta
 
-
+# ------------------ Helper Functions ------------------ #
 def get_region_id(region):
     if region == "All":
         return 0
@@ -17,16 +16,9 @@ def get_region_id(region):
 
 def format_date(date):
     year = str(date.year)
-    if date.month < 10:
-        month = "0" + str(date.month)
-    else:
-        month = str(date.month)
-    if date.day < 10:
-        day = "0" + str(date.day)
-    else:
-        day = str(date.day)
-
-    return year + "-" + month + "-" + day
+    month = f"{date.month:02d}"
+    day = f"{date.day:02d}"
+    return f"{year}-{month}-{day}"
 
 def get_time_from_input(time):
     current_datetime = datetime.now()
@@ -44,23 +36,59 @@ def get_time_from_input(time):
         return format_date(current_datetime - timedelta(days=3000))
     return None
 
-col1, col2 = st.columns(2)
+# ------------------ Streamlit Layout ------------------ #
+st.set_page_config(page_title="Site-to-Site Dashboard", layout="wide")
+st.title("🏭 Site-to-Site Dashboard")
+st.markdown("This dashboard visualizes fault counts across plants for selected regions and timeframes.")
 
-with col1:
-    current_region = st.selectbox("Region", ["All", "NA", "LATAM"], index=1)
+# ------------------ Sidebar Filters ------------------ #
+st.sidebar.header("🔧 Filter Options")
+current_region = st.sidebar.selectbox("Select Region", ["All", "NA", "LATAM"], index=1)
+timeframe = st.sidebar.selectbox("Select Timeframe", ["Last 1 Hour", "Last 1 Day", "Last 1 Week", "Last 1 Month", "Last 1 Year", "All Time"])
 
-with col2:
-    timeframe = st.selectbox("Timeframe", ["Last 1 Hour", "Last 1 Day", "Last 1 Week", "Last 1 Month", "Last 1 Year", "All Time"])
-
+# ------------------ Data Retrieval ------------------ #
 all_plants = db.getPlants(get_region_id(current_region))
-
 plant_data = []
 for plant in all_plants:
     faults = db.getTotalPlantFaultsFromDate(plant, get_time_from_input(timeframe))
-    plant_data.append((plant,faults))
+    plant_data.append((plant, faults))
 
 dataframe = pd.DataFrame(plant_data, columns=["Plant", "Faults"])
 
-# st.line_chart(data = dataframe, x = "Plant", y = "Faults", x_label= "Plant", y_label="Faults")
-barchart = st.bar_chart(data = dataframe, x = "Plant", y = "Faults", x_label= "Plant", y_label="Faults", stack=False)
-# st.write(pd.DataFrame.loc[barchart.columns > 20])
+# ------------------ Visualization 1 ------------------ #
+st.markdown("### 📊 Faults by Plant")
+fig1 = px.bar(dataframe, x="Plant", y="Faults", color="Faults", color_continuous_scale="Viridis",
+              title=f"Faults per Plant in {current_region} Region ({timeframe})")
+fig1.update_layout(xaxis_title="Plant", yaxis_title="Faults", template="plotly_white")
+st.plotly_chart(fig1, use_container_width=True)
+
+# ------------------ Visualization 2: Volume Over Time ------------------ #
+st.markdown("### 🧪 Product Volume Over Time by Site")
+
+# Dropdown for site selection
+selected_site = st.selectbox("Select Site for Volume Trend", ["Chicago", "Orlando", "Houston"])
+
+# Generate mock time series data
+time_range = pd.date_range(start="2023-01-01", periods=12, freq="M")
+volume_data = pd.DataFrame({
+    "Time": time_range.tolist() * 3,
+    "Site": ["Chicago"] * 12 + ["Orlando"] * 12 + ["Houston"] * 12,
+    "Volume": (
+        list((1000 + 50 * i + (i % 3) * 100) for i in range(12)) +
+        list((1200 + 30 * i + (i % 2) * 80) for i in range(12)) +
+        list((1100 + 40 * i + (i % 4) * 60) for i in range(12))
+    )
+})
+
+# Filter data based on selected site
+filtered_volume = volume_data[volume_data["Site"] == selected_site]
+
+# Plot volume over time
+fig2 = px.line(filtered_volume, x="Time", y="Volume", markers=True,
+               title=f"Volume Produced Over Time at {selected_site}",
+               color_discrete_sequence=["#636EFA"])
+fig2.update_layout(xaxis_title="Month", yaxis_title="Volume Produced", template="plotly_white")
+st.plotly_chart(fig2, use_container_width=True)
+
+
+
